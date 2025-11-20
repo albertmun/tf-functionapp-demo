@@ -27,7 +27,7 @@ variable "resource_group_name" {
 variable "storage_account_1_name" {
   description = "Name of the first storage account (public with IP restrictions)"
   type        = string
-  default     = "stgsnefffds1"
+  default     = "stamundemo1"
 
   validation {
     condition     = can(regex("^[a-z0-9]{3,24}$", var.storage_account_1_name))
@@ -38,7 +38,7 @@ variable "storage_account_1_name" {
 variable "storage_account_2_name" {
   description = "Name of the second storage account (private with private endpoint)"
   type        = string
-  default     = "stgsnefffds2"
+  default     = "stamundemo2"
 
   validation {
     condition     = can(regex("^[a-z0-9]{3,24}$", var.storage_account_2_name))
