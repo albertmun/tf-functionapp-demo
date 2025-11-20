@@ -6,6 +6,6 @@ terraform {
     storage_account_name = "snefftfdemo55"
     container_name       = "tfstate"
     key                  = "fd-demo.terraform.tfstate"
-    use_oidc             = true
+    use_azuread_auth     = true
   }
 }
