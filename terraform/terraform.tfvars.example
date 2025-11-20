@@ -1,0 +1,19 @@
+# Example Terraform Variables
+# Copy this file to terraform.tfvars and customize as needed
+
+# Environment and Location
+environment = "test"
+location = "East US"
+location_short = "eus"
+
+# Resource Naming
+resource_group_name = "rg-fd-demo-test"
+storage_account_1_name = "stgsnefffds1"
+storage_account_2_name = "stgsnefffds2"
+function_app_1_name = "sneff-fd-func-1"
+function_app_2_name = "sneff-fd-func-2"
+
+# Network Configuration
+vnet_address_space = ["10.0.0.0/16"]
+function_subnet_address_prefix = "10.0.1.0/24"
+private_endpoint_subnet_address_prefix = "10.0.2.0/24"

@@ -1,0 +1,150 @@
+name: 'Terraform Deploy - Function Apps Demo'
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+    paths: [ 'terraform/**' ]
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  TF_VERSION: '1.7.0'
+  WORKING_DIRECTORY: './terraform'
+
+jobs:
+  terraform-deploy:
+    name: 'Terraform Deploy'
+    runs-on: ubuntu-latest
+    environment: test
+    if: github.ref == 'refs/heads/main'
+    
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: ${{ env.TF_VERSION }}
+        terraform_wrapper: false
+
+    - name: Azure Login
+      uses: azure/login@v1.4.6
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+    - name: Terraform Init
+      run: terraform init -no-color
+      env:
+        ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        ARM_USE_OIDC: true
+
+    - name: Terraform Validate
+      run: terraform validate
+
+    - name: Terraform Plan
+      run: |
+        echo "Running terraform plan..."
+        terraform plan -no-color -out tfplan
+        echo "Plan completed successfully"
+      env:
+        ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        ARM_USE_OIDC: true
+
+    - name: Terraform Apply
+      run: |
+        echo "Running terraform apply..."
+        terraform apply -auto-approve tfplan
+        echo "Apply completed successfully!"
+      env:
+        ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        ARM_USE_OIDC: true
+
+    - name: Deploy Function Apps
+      run: |
+        echo "Deploying Function App code..."
+        
+        # Get resource outputs from Terraform
+        echo "Getting Function App names from Terraform outputs..."
+        FUNC_APP_1_NAME=$(terraform output -raw function_app_1_name)
+        FUNC_APP_2_NAME=$(terraform output -raw function_app_2_name)
+        RG_NAME=$(terraform output -raw resource_group_name)
+        
+        echo "Function App 1: $FUNC_APP_1_NAME"
+        echo "Function App 2: $FUNC_APP_2_NAME"
+        echo "Resource Group: $RG_NAME"
+        
+        # Function to deploy a Function App
+        deploy_function_app() {
+          local APP_NAME=$1
+          local SOURCE_DIR=$2
+          
+          echo "Deploying $APP_NAME from $SOURCE_DIR..."
+          
+          # Create zip package
+          cd "$SOURCE_DIR"
+          zip -r "../${APP_NAME}.zip" .
+          cd ..
+          
+          echo "Created zip package for $APP_NAME"
+          
+          # Deploy using Azure CLI
+          az functionapp deployment source config-zip \
+            --resource-group "$RG_NAME" \
+            --name "$APP_NAME" \
+            --src "${APP_NAME}.zip" \
+            --timeout 300
+            
+          if [ $? -eq 0 ]; then
+            echo "✅ Successfully deployed $APP_NAME"
+            echo "Function URL: https://$APP_NAME.azurewebsites.net"
+          else
+            echo "❌ Failed to deploy $APP_NAME"
+            exit 1
+          fi
+          
+          # Cleanup
+          rm -f "${APP_NAME}.zip"
+        }
+        
+        # Deploy Function App 1
+        if [ -d "../functions/func-app-1" ]; then
+          deploy_function_app "$FUNC_APP_1_NAME" "../functions/func-app-1"
+        else
+          echo "Warning: Function App 1 directory not found"
+        fi
+        
+        # Deploy Function App 2
+        if [ -d "../functions/func-app-2" ]; then
+          deploy_function_app "$FUNC_APP_2_NAME" "../functions/func-app-2"
+        else
+          echo "Warning: Function App 2 directory not found"
+        fi
+        
+        echo ""
+        echo "🎉 Function App deployment completed!"
+        echo "Test URLs:"
+        echo "  Function App 1: https://$FUNC_APP_1_NAME.azurewebsites.net/api/TestStorageConnection"
+        echo "  Function App 2: https://$FUNC_APP_2_NAME.azurewebsites.net/api/TestPrivateStorageConnection"
+      env:
+        ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        ARM_USE_OIDC: true
