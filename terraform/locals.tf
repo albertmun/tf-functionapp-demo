@@ -15,7 +15,7 @@ locals {
 
   # Resolve APIM IP: Use APIM resource's public IP if dynamic resolution enabled, otherwise use static IP
   # The APIM resource exposes public_ip_addresses attribute which is more reliable than DNS resolution
-  apim_resolved_ip = var.use_dynamic_apim_ip ? try(azurerm_api_management.apim.public_ip_addresses[0], "") : ""
+  apim_resolved_ip  = var.use_dynamic_apim_ip ? try(azurerm_api_management.apim.public_ip_addresses[0], "") : ""
   apim_effective_ip = local.apim_resolved_ip != "" && local.apim_resolved_ip != null ? local.apim_resolved_ip : var.apim_ip_address
 
   # Conditional IP restrictions for Function App 2 (empty list when disabled)

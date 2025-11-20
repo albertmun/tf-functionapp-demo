@@ -41,6 +41,9 @@ resource "azurerm_storage_account" "public_storage" {
   # Enable public access - network restrictions managed by separate resource
   public_network_access_enabled = true
 
+  # Disable shared key access to enforce Azure AD authentication
+  shared_access_key_enabled = false
+
   # Note: Network rules managed by azurerm_storage_account_network_rules in security.tf
 
   tags = local.common_tags
@@ -56,6 +59,9 @@ resource "azurerm_storage_account" "private_storage" {
 
   # Disable public access - only private endpoint access
   public_network_access_enabled = false
+
+  # Disable shared key access to enforce Azure AD authentication
+  shared_access_key_enabled = false
 
   network_rules {
     default_action = "Deny"
@@ -82,10 +88,10 @@ resource "azurerm_windows_function_app" "func_app_1" {
   resource_group_name = data.azurerm_resource_group.demo.name
   location            = data.azurerm_resource_group.demo.location
 
-  storage_account_name       = azurerm_storage_account.public_storage.name
-  storage_account_access_key = azurerm_storage_account.public_storage.primary_access_key
-  service_plan_id            = azurerm_service_plan.demo.id
-  https_only                 = true
+  storage_account_name          = azurerm_storage_account.public_storage.name
+  storage_uses_managed_identity = true
+  service_plan_id               = azurerm_service_plan.demo.id
+  https_only                    = true
 
   # Enable system-assigned managed identity
   identity {
@@ -96,7 +102,7 @@ resource "azurerm_windows_function_app" "func_app_1" {
     application_stack {
       powershell_core_version = var.powershell_core_version
     }
-    
+
     # Enable CORS for Azure Portal testing
     cors {
       allowed_origins = [
@@ -108,10 +114,11 @@ resource "azurerm_windows_function_app" "func_app_1" {
   }
 
   app_settings = {
-    "FUNCTIONS_WORKER_RUNTIME"   = "powershell"
-    "WEBSITE_RUN_FROM_PACKAGE"   = "1"
-    "STORAGE_ACCOUNT_1_NAME"     = azurerm_storage_account.public_storage.name
-    "STORAGE_ACCOUNT_1_ENDPOINT" = azurerm_storage_account.public_storage.primary_blob_endpoint
+    "FUNCTIONS_WORKER_RUNTIME"         = "powershell"
+    "WEBSITE_RUN_FROM_PACKAGE"         = "1"
+    "STORAGE_ACCOUNT_1_NAME"           = azurerm_storage_account.public_storage.name
+    "STORAGE_ACCOUNT_1_ENDPOINT"       = azurerm_storage_account.public_storage.primary_blob_endpoint
+    "AzureWebJobsStorage__accountName" = azurerm_storage_account.public_storage.name
   }
 
   tags = local.common_tags
@@ -123,10 +130,10 @@ resource "azurerm_windows_function_app" "func_app_2" {
   resource_group_name = data.azurerm_resource_group.demo.name
   location            = data.azurerm_resource_group.demo.location
 
-  storage_account_name       = azurerm_storage_account.public_storage.name # Uses public storage for function runtime
-  storage_account_access_key = azurerm_storage_account.public_storage.primary_access_key
-  service_plan_id            = azurerm_service_plan.demo.id
-  https_only                 = true
+  storage_account_name          = azurerm_storage_account.public_storage.name # Uses public storage for function runtime
+  storage_uses_managed_identity = true
+  service_plan_id               = azurerm_service_plan.demo.id
+  https_only                    = true
 
   # Enable system-assigned managed identity
   identity {
@@ -138,7 +145,7 @@ resource "azurerm_windows_function_app" "func_app_2" {
       powershell_core_version = var.powershell_core_version
     }
     vnet_route_all_enabled = true
-    
+
     # Enable CORS for Azure Portal testing
     cors {
       allowed_origins = [
@@ -163,11 +170,12 @@ resource "azurerm_windows_function_app" "func_app_2" {
   }
 
   app_settings = {
-    "FUNCTIONS_WORKER_RUNTIME"   = "powershell"
-    "WEBSITE_RUN_FROM_PACKAGE"   = "1"
-    "STORAGE_ACCOUNT_2_NAME"     = azurerm_storage_account.private_storage.name
-    "STORAGE_ACCOUNT_2_ENDPOINT" = azurerm_storage_account.private_storage.primary_blob_endpoint
-    "WEBSITE_VNET_ROUTE_ALL"     = "1"
+    "FUNCTIONS_WORKER_RUNTIME"         = "powershell"
+    "WEBSITE_RUN_FROM_PACKAGE"         = "1"
+    "STORAGE_ACCOUNT_2_NAME"           = azurerm_storage_account.private_storage.name
+    "STORAGE_ACCOUNT_2_ENDPOINT"       = azurerm_storage_account.private_storage.primary_blob_endpoint
+    "WEBSITE_VNET_ROUTE_ALL"           = "1"
+    "AzureWebJobsStorage__accountName" = azurerm_storage_account.public_storage.name
   }
 
   tags = local.common_tags
@@ -175,12 +183,12 @@ resource "azurerm_windows_function_app" "func_app_2" {
 
 # Existing API Management instance (to be imported into state)
 resource "azurerm_api_management" "apim" {
-  name                = var.apim_name
-  location            = var.apim_location
-  resource_group_name = data.azurerm_resource_group.demo.name
-  publisher_email     = var.apim_publisher_email
-  publisher_name      = var.apim_publisher_name
-  sku_name            = var.apim_sku_name
+  name                          = var.apim_name
+  location                      = var.apim_location
+  resource_group_name           = data.azurerm_resource_group.demo.name
+  publisher_email               = var.apim_publisher_email
+  publisher_name                = var.apim_publisher_name
+  sku_name                      = var.apim_sku_name
   public_network_access_enabled = true
 
   tags = local.common_tags
@@ -196,7 +204,7 @@ resource "azurerm_api_management_api" "func_app_2_api" {
   path                = "funcapp2"
   protocols           = ["https"]
   service_url         = "https://${azurerm_windows_function_app.func_app_2.default_hostname}/api"
-  
+
   description = "API for accessing Function App 2 functions through APIM"
 
   depends_on = [

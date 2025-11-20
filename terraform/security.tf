@@ -15,37 +15,49 @@ resource "azurerm_storage_account_network_rules" "storage_1_ip_restrictions" {
 }
 
 # Role assignments for Function App managed identities
-# Temporarily commented out - will add these via Azure CLI after infrastructure deployment
-# to work around Terraform dependency issues with managed identity creation
 
-# Function App 1 - Storage Blob Data Contributor on Storage Account 1
-# resource "azurerm_role_assignment" "func_app_1_storage_1" {
-#   scope                = azurerm_storage_account.public_storage.id
-#   role_definition_name = "Storage Blob Data Contributor"
-#   principal_id         = azurerm_windows_function_app.func_app_1.identity[0].principal_id
-#   principal_type       = "ServicePrincipal"
-# }
+# Function App 1 - Storage Blob Data Contributor on Storage Account 1 (for runtime)
+resource "azurerm_role_assignment" "func_app_1_storage_1_blob" {
+  scope                            = azurerm_storage_account.public_storage.id
+  role_definition_name             = "Storage Blob Data Contributor"
+  principal_id                     = azurerm_windows_function_app.func_app_1.identity[0].principal_id
+  principal_type                   = "ServicePrincipal"
+  skip_service_principal_aad_check = true
+}
 
-# Function App 2 - Storage Blob Data Contributor on Storage Account 2  
-# resource "azurerm_role_assignment" "func_app_2_storage_2" {
-#   scope                = azurerm_storage_account.private_storage.id
-#   role_definition_name = "Storage Blob Data Contributor"
-#   principal_id         = azurerm_windows_function_app.func_app_2.identity[0].principal_id
-#   principal_type       = "ServicePrincipal"
-# }
+# Function App 1 - Storage Account Contributor (for function runtime operations)
+resource "azurerm_role_assignment" "func_app_1_storage_1_account" {
+  scope                            = azurerm_storage_account.public_storage.id
+  role_definition_name             = "Storage Account Contributor"
+  principal_id                     = azurerm_windows_function_app.func_app_1.identity[0].principal_id
+  principal_type                   = "ServicePrincipal"
+  skip_service_principal_aad_check = true
+}
 
-# Optional: Cross-access for testing (Function App 1 can also access Storage Account 2)
-# resource "azurerm_role_assignment" "func_app_1_storage_2" {
-#   scope                = azurerm_storage_account.private_storage.id
-#   role_definition_name = "Storage Blob Data Reader"
-#   principal_id         = azurerm_windows_function_app.func_app_1.identity[0].principal_id
-#   principal_type       = "ServicePrincipal"
-# }
+# Function App 2 - Storage Blob Data Contributor on Storage Account 1 (for runtime)
+resource "azurerm_role_assignment" "func_app_2_storage_1_blob" {
+  scope                            = azurerm_storage_account.public_storage.id
+  role_definition_name             = "Storage Blob Data Contributor"
+  principal_id                     = azurerm_windows_function_app.func_app_2.identity[0].principal_id
+  principal_type                   = "ServicePrincipal"
+  skip_service_principal_aad_check = true
+}
 
-# Optional: Cross-access for testing (Function App 2 can also access Storage Account 1)
-# resource "azurerm_role_assignment" "func_app_2_storage_1" {
-#   scope                = azurerm_storage_account.public_storage.id
-#   role_definition_name = "Storage Blob Data Reader"  
-#   principal_id         = azurerm_windows_function_app.func_app_2.identity[0].principal_id
-#   principal_type       = "ServicePrincipal"
+# Function App 2 - Storage Account Contributor (for function runtime operations)
+resource "azurerm_role_assignment" "func_app_2_storage_1_account" {
+  scope                            = azurerm_storage_account.public_storage.id
+  role_definition_name             = "Storage Account Contributor"
+  principal_id                     = azurerm_windows_function_app.func_app_2.identity[0].principal_id
+  principal_type                   = "ServicePrincipal"
+  skip_service_principal_aad_check = true
+}
+
+# Function App 2 - Storage Blob Data Contributor on Storage Account 2 (private storage)
+resource "azurerm_role_assignment" "func_app_2_storage_2" {
+  scope                            = azurerm_storage_account.private_storage.id
+  role_definition_name             = "Storage Blob Data Contributor"
+  principal_id                     = azurerm_windows_function_app.func_app_2.identity[0].principal_id
+  principal_type                   = "ServicePrincipal"
+  skip_service_principal_aad_check = true
+}
 # }

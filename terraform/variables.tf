@@ -9,13 +9,13 @@ variable "environment" {
 variable "location" {
   description = "Azure region for resources"
   type        = string
-  default     = "East US"
+  default     = "West US 2"
 }
 
 variable "location_short" {
   description = "Short name for Azure region"
   type        = string
-  default     = "eus"
+  default     = "wus2"
 }
 
 variable "resource_group_name" {
@@ -67,13 +67,13 @@ variable "enable_function_app_2_restrictions" {
 variable "function_app_1_name" {
   description = "Name of the first function app"
   type        = string
-  default     = "sneff-fd-func-1"
+  default     = "amun-fd-func-1"
 }
 
 variable "function_app_2_name" {
   description = "Name of the second function app"
   type        = string
-  default     = "sneff-fd-func-2"
+  default     = "amun-fd-func-2"
 }
 
 variable "vnet_address_space" {
@@ -141,7 +141,7 @@ variable "creator" {
 variable "apim_name" {
   description = "Name of the existing API Management instance"
   type        = string
-  default     = "apim-fd-public-test2"
+  default     = "apim-fd-public-amun2"
 }
 
 variable "apim_location" {
@@ -159,7 +159,7 @@ variable "apim_sku_name" {
 variable "apim_publisher_email" {
   description = "Publisher email for API Management"
   type        = string
-  default     = "shane.neff@outlook.com"
+  default     = "albertmun@gmail.com"
 }
 
 variable "apim_publisher_name" {

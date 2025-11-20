@@ -96,10 +96,10 @@ output "apim_api_url" {
 output "apim_api_endpoints" {
   description = "Full URLs for each Function App 2 endpoint via APIM"
   value = {
-    healthcheck             = "https://${azurerm_api_management.apim.gateway_url}/funcapp2/HealthCheck"
-    network_diagnostics     = "https://${azurerm_api_management.apim.gateway_url}/funcapp2/NetworkDiagnostics"
-    simple_test            = "https://${azurerm_api_management.apim.gateway_url}/funcapp2/SimpleTest"
-    test_private_storage   = "https://${azurerm_api_management.apim.gateway_url}/funcapp2/TestPrivateStorageConnection"
-    test_storage_simple    = "https://${azurerm_api_management.apim.gateway_url}/funcapp2/TestStorageSimple"
+    healthcheck          = "https://${azurerm_api_management.apim.gateway_url}/funcapp2/HealthCheck"
+    network_diagnostics  = "https://${azurerm_api_management.apim.gateway_url}/funcapp2/NetworkDiagnostics"
+    simple_test          = "https://${azurerm_api_management.apim.gateway_url}/funcapp2/SimpleTest"
+    test_private_storage = "https://${azurerm_api_management.apim.gateway_url}/funcapp2/TestPrivateStorageConnection"
+    test_storage_simple  = "https://${azurerm_api_management.apim.gateway_url}/funcapp2/TestStorageSimple"
   }
 }
