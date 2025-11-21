@@ -11,7 +11,7 @@ try {
     
     # Test private endpoint connectivity
     $testResult = @{
-        FunctionApp = "sneff-fd-func-2"
+        FunctionApp = "amun-fd-func-2"
         StorageAccount = $storageAccountName
         StorageEndpoint = $storageEndpoint
         AccessMethod = "VNet Integration + Private Endpoint"

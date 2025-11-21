@@ -36,8 +36,8 @@ Write-Host "Starting role assignment process..." -ForegroundColor Green
 try {
     # Get the Function Apps
     Write-Host "Getting Function App managed identities..." -ForegroundColor Yellow
-    $funcApp1 = Get-AzWebApp -ResourceGroupName $ResourceGroupName -Name "sneff-fd-func-1"
-    $funcApp2 = Get-AzWebApp -ResourceGroupName $ResourceGroupName -Name "sneff-fd-func-2"
+    $funcApp1 = Get-AzWebApp -ResourceGroupName $ResourceGroupName -Name "amun-fd-func-1"
+    $funcApp2 = Get-AzWebApp -ResourceGroupName $ResourceGroupName -Name "amun-fd-func-2"
     
     # Get the Storage Accounts
     Write-Host "Getting Storage Accounts..." -ForegroundColor Yellow

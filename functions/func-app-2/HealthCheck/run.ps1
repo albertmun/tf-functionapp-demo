@@ -6,7 +6,7 @@ param($Request, $TriggerMetadata)
 try {
     $result = @{
         Status = "SUCCESS"
-        FunctionApp = "sneff-fd-func-2"
+        FunctionApp = "amun-fd-func-2"
         Timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss UTC"
         Environment = @{
             WEBSITE_VNET_ROUTE_ALL = $env:WEBSITE_VNET_ROUTE_ALL

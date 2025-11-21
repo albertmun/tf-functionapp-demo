@@ -11,7 +11,7 @@ try {
     $vnetRouteAll = $env:WEBSITE_VNET_ROUTE_ALL
     
     $diagnostics = @{
-        FunctionApp = "sneff-fd-func-2"
+        FunctionApp = "amun-fd-func-2"
         StorageAccount = $storageAccountName
         StorageEndpoint = $storageEndpoint
         VNetRouteAll = $vnetRouteAll

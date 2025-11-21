@@ -20,12 +20,12 @@ param(
     [string]$ResourceGroupName
 )
 
-Write-Host "🔍 Diagnosing Function App 2 (sneff-fd-func-2) 500 Error..." -ForegroundColor Yellow
+Write-Host "🔍 Diagnosing Function App 2 (amun-fd-func-2) 500 Error..." -ForegroundColor Yellow
 
 try {
     # Get Function App 2
     Write-Host "`n1. Getting Function App 2 details..." -ForegroundColor Cyan
-    $funcApp2 = Get-AzWebApp -ResourceGroupName $ResourceGroupName -Name "sneff-fd-func-2"
+    $funcApp2 = Get-AzWebApp -ResourceGroupName $ResourceGroupName -Name "amun-fd-func-2"
     
     if (-not $funcApp2) {
         Write-Error "Function App 2 not found!"
@@ -38,7 +38,7 @@ try {
     
     # Check VNet Integration
     Write-Host "`n2. Checking VNet Integration..." -ForegroundColor Cyan
-    $vnetConnection = Get-AzWebAppVnetIntegration -ResourceGroupName $ResourceGroupName -Name "sneff-fd-func-2"
+    $vnetConnection = Get-AzWebAppVnetIntegration -ResourceGroupName $ResourceGroupName -Name "amun-fd-func-2"
     
     if ($vnetConnection) {
         Write-Host "   ✅ VNet Integration found" -ForegroundColor Green
@@ -50,7 +50,7 @@ try {
     
     # Check App Settings
     Write-Host "`n3. Checking App Settings..." -ForegroundColor Cyan
-    $appSettings = Get-AzWebAppApplicationSetting -ResourceGroupName $ResourceGroupName -Name "sneff-fd-func-2"
+    $appSettings = Get-AzWebAppApplicationSetting -ResourceGroupName $ResourceGroupName -Name "amun-fd-func-2"
     
     $criticalSettings = @(
         "WEBSITE_VNET_ROUTE_ALL",

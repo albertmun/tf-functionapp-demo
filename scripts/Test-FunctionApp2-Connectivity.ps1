@@ -1,6 +1,6 @@
 # Function App 2 - Storage Connectivity Test
 # Tests connectivity from Function App 2 to Storage Account 2 using Private Endpoint and VNet integration
-# This script should be deployed as a PowerShell function in sneff-fd-func-2
+# This script should be deployed as a PowerShell function in amun-fd-func-2
 
 param($Request, $TriggerMetadata)
 
@@ -14,7 +14,7 @@ Write-Host "Target Endpoint: $storageEndpoint"
 
 # Initialize test results
 $testResults = @{
-    FunctionApp = "sneff-fd-func-2"
+    FunctionApp = "amun-fd-func-2"
     StorageAccount = $storageAccountName
     TestTimestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss UTC")
     Tests = @()
@@ -201,7 +201,7 @@ $passedTests = ($testResults.Tests | Where-Object { $_.Status -eq "PASS" }).Coun
 $totalTests = ($testResults.Tests | Where-Object { $_.Status -in @("PASS", "FAIL") }).Count
 
 Write-Host "`n=== TEST SUMMARY ==="
-Write-Host "Function App: sneff-fd-func-2"
+Write-Host "Function App: amun-fd-func-2"
 Write-Host "Target Storage: $storageAccountName (Private endpoint access)"
 Write-Host "Passed: $passedTests/$totalTests tests"
 Write-Host "Connection Method: VNet Integration + Private Endpoint"

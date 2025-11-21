@@ -2,8 +2,8 @@
 
 This repository demonstrates two different patterns for securing Azure Function App access to Azure Storage Accounts, plus API Management integration:
 
-1. **Function App 1 (`sneff-fd-func-1`)**: Uses IP-based access restrictions to `stgsnefffds1`
-2. **Function App 2 (`sneff-fd-func-2`)**: Uses VNet integration and private endpoint to access `stgsnefffds2`
+1. **Function App 1 (`amun-fd-func-1`)**: Uses IP-based access restrictions to `stgsnefffds1`
+2. **Function App 2 (`amun-fd-func-2`)**: Uses VNet integration and private endpoint to access `stgsnefffds2`
 3. **APIM Integration**: Automatically creates and configures API operations for Function App 2
 
 ## Architecture Overview
@@ -135,11 +135,11 @@ Invoke-RestMethod -Uri "https://apim-fd-public-test2.azure-api.net/funcapp2/Heal
 
 1. **Function App 1 Test**:
    - Deploy `scripts/Test-FunctionApp1-Connectivity.ps1` as an HTTP-triggered function
-   - Access via: `https://sneff-fd-func-1.azurewebsites.net/api/test-connectivity`
+   - Access via: `https://amun-fd-func-1.azurewebsites.net/api/test-connectivity`
 
 2. **Function App 2 Test**:
    - Deploy `scripts/Test-FunctionApp2-Connectivity.ps1` as an HTTP-triggered function  
-   - Access via: `https://sneff-fd-func-2.azurewebsites.net/api/test-connectivity`
+   - Access via: `https://amun-fd-func-2.azurewebsites.net/api/test-connectivity`
    - **Or via APIM**: `https://apim-fd-public-test2.azure-api.net/funcapp2/...`
 
 ### Expected Test Results
@@ -166,8 +166,8 @@ Invoke-RestMethod -Uri "https://apim-fd-public-test2.azure-api.net/funcapp2/Heal
 | Resource Group | `rg-fd-demo-test` | Resource Group | Container for all resources |
 | Storage Account 1 | `stgsnefffds1` | Storage Account | Public with IP restrictions |
 | Storage Account 2 | `stgsnefffds2` | Storage Account | Private endpoint only |
-| Function App 1 | `sneff-fd-func-1` | Function App | Tests IP-based access |
-| Function App 2 | `sneff-fd-func-2` | Function App | Tests private endpoint access |
+| Function App 1 | `amun-fd-func-1` | Function App | Tests IP-based access |
+| Function App 2 | `amun-fd-func-2` | Function App | Tests private endpoint access |
 | App Service Plan | `plan-fd-demo-test-eus` | App Service Plan | S1 SKU for both functions |
 | APIM Instance | `apim-fd-public-test2` | API Management | Gateway for Function App 2 |
 | APIM API | `func-app-2-api` | APIM API | Auto-configured operations |

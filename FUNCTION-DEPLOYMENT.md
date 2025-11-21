@@ -5,19 +5,19 @@ This demo showcases two different patterns for Azure Function Apps to access Azu
 ## Architecture Overview
 
 ### Pattern 1: IP Restrictions
-- **Function App**: `sneff-fd-func-1`
+- **Function App**: `amun-fd-func-1`
 - **Storage Account**: `stgsnefffds1` (public with IP restrictions)
 - **Access Method**: Function App's outbound IPs are whitelisted in storage account network rules
 
 ### Pattern 2: Private Endpoints  
-- **Function App**: `sneff-fd-func-2` 
+- **Function App**: `amun-fd-func-2` 
 - **Storage Account**: `stgsnefffds2` (private endpoint only)
 - **Access Method**: Function App uses VNet integration to access storage via private endpoint
 
 ## Deployed Infrastructure
 
 ✅ **Resource Group**: `tf-demo`  
-✅ **Function Apps**: `sneff-fd-func-1`, `sneff-fd-func-2`  
+✅ **Function Apps**: `amun-fd-func-1`, `amun-fd-func-2`  
 ✅ **Storage Accounts**: `stgsnefffds1`, `stgsnefffds2`  
 ✅ **App Service Plan**: S1 SKU (Windows)  
 ✅ **Virtual Network**: With subnets for VNet integration and private endpoints  
@@ -38,12 +38,12 @@ The infrastructure is deployed, but you need to deploy the function code:
 # Function App 1
 cd functions/func-app-1
 zip -r func-app-1.zip .
-az functionapp deployment source config-zip --resource-group tf-demo --name sneff-fd-func-1 --src func-app-1.zip
+az functionapp deployment source config-zip --resource-group tf-demo --name amun-fd-func-1 --src func-app-1.zip
 
 # Function App 2  
 cd ../func-app-2
 zip -r func-app-2.zip .
-az functionapp deployment source config-zip --resource-group tf-demo --name sneff-fd-func-2 --src func-app-2.zip
+az functionapp deployment source config-zip --resource-group tf-demo --name amun-fd-func-2 --src func-app-2.zip
 ```
 
 ### Option 3: Visual Studio Code
@@ -56,13 +56,13 @@ After deploying the code, test the storage connectivity:
 
 ### Function App 1 (IP Restrictions)
 ```
-GET https://sneff-fd-func-1.azurewebsites.net/api/TestStorageConnection
+GET https://amun-fd-func-1.azurewebsites.net/api/TestStorageConnection
 ```
 
 **Expected Response:**
 ```json
 {
-  "FunctionApp": "sneff-fd-func-1",
+  "FunctionApp": "amun-fd-func-1",
   "StorageAccount": "stgsnefffds1", 
   "AccessMethod": "IP Restrictions",
   "Status": "SUCCESS",
@@ -72,13 +72,13 @@ GET https://sneff-fd-func-1.azurewebsites.net/api/TestStorageConnection
 
 ### Function App 2 (Private Endpoint)
 ```
-GET https://sneff-fd-func-2.azurewebsites.net/api/TestPrivateStorageConnection  
+GET https://amun-fd-func-2.azurewebsites.net/api/TestPrivateStorageConnection  
 ```
 
 **Expected Response:**
 ```json
 {
-  "FunctionApp": "sneff-fd-func-2",
+  "FunctionApp": "amun-fd-func-2",
   "StorageAccount": "stgsnefffds2",
   "AccessMethod": "VNet Integration + Private Endpoint", 
   "Status": "SUCCESS",

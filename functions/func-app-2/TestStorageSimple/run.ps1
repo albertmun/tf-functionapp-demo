@@ -10,7 +10,7 @@ try {
     $storageEndpoint = $env:STORAGE_ACCOUNT_2_ENDPOINT
     
     $testResult = @{
-        FunctionApp = "sneff-fd-func-2"
+        FunctionApp = "amun-fd-func-2"
         StorageAccount = $storageAccountName
         StorageEndpoint = $storageEndpoint
         AccessMethod = "Public Storage Test"

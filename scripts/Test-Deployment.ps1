@@ -4,10 +4,10 @@ param(
     [string]$ResourceGroupName,
     
     [Parameter(Mandatory=$false)]
-    [string]$FunctionApp1Name = "sneff-fd-func-1",
+    [string]$FunctionApp1Name = "amun-fd-func-1",
     
     [Parameter(Mandatory=$false)]
-    [string]$FunctionApp2Name = "sneff-fd-func-2"
+    [string]$FunctionApp2Name = "amun-fd-func-2"
 )
 
 Write-Host "=== Function App Deployment Diagnostics ===" -ForegroundColor Green

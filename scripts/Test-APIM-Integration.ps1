@@ -3,13 +3,13 @@
 
 param(
     [Parameter(Mandatory=$false)]
-    [string]$ApimName = "apim-fd-public-test2",
+    [string]$ApimName = "apim-fd-public-amun2",
     
     [Parameter(Mandatory=$false)]
     [string]$SubscriptionKey = "",
     
     [Parameter(Mandatory=$false)]
-    [switch]$Verbose
+    [switch]$ShowDetails
 )
 
 $ErrorActionPreference = "Continue"
@@ -86,7 +86,7 @@ foreach ($endpoint in $endpoints) {
         Write-Host "  ✓ SUCCESS" -ForegroundColor Green
         Write-Host "  Response Time: $elapsed ms" -ForegroundColor Gray
         
-        if ($Verbose) {
+        if ($ShowDetails) {
             Write-Host "  Response:" -ForegroundColor Gray
             $response | ConvertTo-Json -Depth 3 | Write-Host -ForegroundColor DarkGray
         }
@@ -105,7 +105,7 @@ foreach ($endpoint in $endpoints) {
         Write-Host "  ✗ FAILED" -ForegroundColor Red
         Write-Host "  Error: $statusCode - $statusDescription" -ForegroundColor Red
         
-        if ($Verbose) {
+        if ($ShowDetails) {
             Write-Host "  Details: $($_.Exception.Message)" -ForegroundColor DarkRed
         }
         

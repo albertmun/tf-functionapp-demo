@@ -14,7 +14,7 @@ try {
     
     # Test storage connectivity
     $testResult = @{
-        FunctionApp = "sneff-fd-func-1"
+        FunctionApp = "amun-fd-func-1"
         StorageAccount = $storageAccountName
         StorageEndpoint = $storageEndpoint
         AccessMethod = "IP Restrictions"

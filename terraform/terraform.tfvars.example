@@ -10,8 +10,8 @@ location_short = "eus"
 resource_group_name = "rg-fd-demo-test"
 storage_account_1_name = "stgsnefffds1"
 storage_account_2_name = "stgsnefffds2"
-function_app_1_name = "sneff-fd-func-1"
-function_app_2_name = "sneff-fd-func-2"
+function_app_1_name = "amun-fd-func-1"
+function_app_2_name = "amun-fd-func-2"
 
 # Network Configuration
 vnet_address_space = ["10.0.0.0/16"]

@@ -1,6 +1,6 @@
 # Function App 1 - Storage Connectivity Test
 # Tests connectivity from Function App 1 to Storage Account 1 using IP restrictions
-# This script should be deployed as a PowerShell function in sneff-fd-func-1
+# This script should be deployed as a PowerShell function in amun-fd-func-1
 
 param($Request, $TriggerMetadata)
 
@@ -14,7 +14,7 @@ Write-Host "Target Endpoint: $storageEndpoint"
 
 # Initialize test results
 $testResults = @{
-    FunctionApp = "sneff-fd-func-1"
+    FunctionApp = "amun-fd-func-1"
     StorageAccount = $storageAccountName
     TestTimestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss UTC")
     Tests = @()
@@ -125,7 +125,7 @@ $passedTests = ($testResults.Tests | Where-Object { $_.Status -eq "PASS" }).Coun
 $totalTests = ($testResults.Tests | Where-Object { $_.Status -in @("PASS", "FAIL") }).Count
 
 Write-Host "`n=== TEST SUMMARY ==="
-Write-Host "Function App: sneff-fd-func-1"
+Write-Host "Function App: amun-fd-func-1"
 Write-Host "Target Storage: $storageAccountName (IP-restricted access)"
 Write-Host "Passed: $passedTests/$totalTests tests"
 Write-Host "Connection Method: IP Allowlist"
